@@ -158,27 +158,16 @@ select c.sname, c.comm, sum(c.comm*a.amt) as SP_totIncome  from orders a, custom
  -- 100.Does the customer who has placed the maximum number of orders have the maximum rating?  Yes
 select if(cus_rating=(select max(rating) from customer),'yes','no') as Output  from (select max(rating) as cus_rating from customer where cnum = any (select cnum as Customer_max_orders from orders group by cnum having count(*)= (select max(counted) from (select cnum,count(*) as counted from orders group by cnum) as counts)))as ans ;
  -- 101.Has the customer who has spent the largest amount of money been given the highest rating?
-
-
-
-
-
 select *from customer a where a.rating=a.rating order by rating, cname;  -- which cus have same rating
 select a.cnum, b.cname, sum(a.amt) from orders a, customer b where a.cnum=b.cnum  group by a.cnum order by sum(a.amt) limit 1 ; -- worst cus
 select a.cnum, b.cname, sum(a.amt) from orders a, customer b where a.cnum=b.cnum  group by a.cnum order by sum(a.amt) desc limit 1 ; -- best cus
-
-
 -- join all 3 tables add snum in 3rd table
-
 select a.onum, a.odate, a.amt, a.cnum, a.snum from orders a, customer b where a.cnum=b.cnum;
 select sum(a.amt),b.snum from orders a, customer b where a.cnum=b.cnum group by b.snum; 
 select c.sname,sum(a.amt) as TotalSale,b.snum, sum(amt)*c.comm from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum order by TotalSale desc;
 select c.sname as SaleName,sum(a.amt) as TotalSalebySP,sum(amt)*c.comm as CoMM, (sum(a.amt)*100)/(select sum(amt) from orders) as SalaesPerc from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum group by b.snum order by TotalSalebySP desc;
---
 select snum, sname, comm from salespeople where comm between .121 and .14;
-
 select b.cname,a.cnum, b.rating, sum(a.amt) as TSpend from orders a, customer b where a.cnum=b.cnum group by cnum order by TSpend;
-
 select sum(a.amt) as Y, sum(a.amt*c.comm)as X from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and (b.city='rome' or b.city='london');
 select c.sname, sum(a.amt*c.comm) from orders a, customer b, salespeople c where a.cnum=b.cnum and b.snum=c.snum and (c.city='london' or c.city='rome') group by sname;
 
